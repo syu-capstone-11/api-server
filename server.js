@@ -1,8 +1,15 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const Post = require('./models/post');
+const postRoutes = require('./routes/posts');
+const { MOCKED_ITEM_LISTS } = require('./mocks/list.js');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json()); 
+app.use(bodyParser.json());
+app.use('/posts', postRoutes);
 
 app.get('/api/data', (req, res) => {
     res.json({ message: 'data on' });
