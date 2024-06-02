@@ -1,5 +1,5 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const sequelize = require('./database');
 const Post = require('./models/post');
 const postRoutes = require('./routes/posts');
 const { MOCKED_ITEM_LISTS } = require('./mocks/list.js');
@@ -8,7 +8,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json()); 
-app.use(bodyParser.json());
 app.use('/posts', postRoutes);
 
 app.get('/api/data', (req, res) => {
@@ -19,27 +18,30 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-const sqlite3 = require('sqlite3').verbose();
-const DB_PATH = 'C:/nodejs/express_practice/Sqlite.js';
-const db = new sqlite3.Database('./amatdadb.db', (err) => {
-    if (err) {
-        console.error(err.message);
-    }
-    console.log('Datebase connected.');
-});
+sequelize.authenticate()
+    .then(() => {
+        console.log('Database connected.');
+        return sequelize.sync();
+    })
+    .then(() => {
+        console.log('Database synchronized.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
+
 
 app.get('/users', (req, res) => {
     const sql = 'SELECT * FROM users';
-    
-    db.all(sql, [], (err, rows) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-        }
+    sequelize.query(sql, { type: sequelize.QueryTypes.SELECT })
+    .then(users => {
         res.json({
             message: 'success',
-            data: rows
+            data: users
         });
+    })
+    .catch(err => {
+        res.status(400).json({ error: err.message });
     });
 });
 
