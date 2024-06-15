@@ -11,9 +11,17 @@ const Post = sequelize.define('Post', {
     content: {
         type: DataTypes.TEXT,
         allowNull: false
-    }
+    },
+    latitude: {
+        type: DataTypes.NUMBER,
+        allowNull: false
+    },
+    longtitude: {
+        type: DataTypes.NUMBER,
+        allowNull: false
+    },
 }, {
-    // 추가 설정 옵션
+    
 });
 
 console.log('Post model defined:', Post);

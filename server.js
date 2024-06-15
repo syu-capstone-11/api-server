@@ -3,12 +3,14 @@ const sequelize = require('./database');
 const Post = require('./models/post');
 const postRoutes = require('./routes/posts');
 const { MOCKED_ITEM_LISTS } = require('./mocks/list.js');
+const postmanTestRoutes = require('./postmantest.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json()); 
 app.use('/posts', postRoutes);
+app.use('/postman', postmanTestRoutes);
 
 app.get('/api/data', (req, res) => {
     res.json({ message: 'data on' });
